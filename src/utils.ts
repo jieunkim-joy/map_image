@@ -82,7 +82,6 @@ export function parseCSVData(csvText: string): ChargerStation[] {
       const lat = parseFloat(row.lati) || 0;
       const lng = parseFloat(row.longi) || 0;
       const price = parseFloat(row['Promotion Price']) || 0;
-      const speed = parseFloat(row['speed(kwh)']) || 0;
       
       stationMap.set(statId, {
         id: statId,
