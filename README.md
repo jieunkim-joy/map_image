@@ -12,6 +12,8 @@
 
 ## 설치 및 실행
 
+### 로컬 개발
+
 ```bash
 # 의존성 설치
 npm install
@@ -21,7 +23,22 @@ npm run dev
 
 # 프로덕션 빌드
 npm run build
+
+# 프로덕션 빌드 미리보기
+npm run preview
+
+# 프로덕션 서버 실행 (빌드 후)
+npm start
 ```
+
+### Railway 배포
+
+Railway에 배포하는 방법은 [RAILWAY_DEPLOY.md](./RAILWAY_DEPLOY.md)를 참고하세요.
+
+**빠른 배포:**
+1. Railway에서 GitHub 저장소 연결
+2. 환경변수 설정 (아래 참고)
+3. 자동 배포 완료
 
 ## 프로젝트 구조
 
@@ -93,6 +110,8 @@ map_code/
 ## 개발 참고사항
 
 - 모든 컴포넌트는 `src/` 폴더의 루트 레벨에 위치 (Flat Structure)
-- API 키는 보안을 위해 하드코딩되어 있음 (프로덕션 배포 시 환경변수 사용 권장)
+- API 키는 환경변수로 관리됩니다 (보안)
 - CSV 파일은 `public/stations.csv`에 위치
+- 프로덕션 빌드는 `dist/` 폴더에 생성됩니다
+- Railway 배포 시 Express 서버가 정적 파일을 서빙합니다
 
