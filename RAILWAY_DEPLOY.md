@@ -15,6 +15,11 @@ VITE_KAKAO_REST_API_KEY=2593b2e75d34733f4d2bdfafc70fd001
 VITE_ENV_API_KEY=YpTJD6AvEhKYwklChyF8W6zutK228pAkbKgy3qGNa18%2FmyJTkQxtCDLAJvMLnQPQCm5JlYeCUgX2Yy0HS8fNgw%3D%3D
 ```
 
+⚠️ **중요**: 
+- Vite는 **빌드 시점**에 환경변수를 번들에 포함합니다
+- 환경변수를 추가/수정한 후 **반드시 재배포**해야 합니다!
+- 재배포 방법: Deployments 탭 → "..." 메뉴 → "Redeploy"
+
 ### 3. 빌드 설정 확인
 Railway는 자동으로 다음을 감지합니다:
 - **Build Command**: `npm run build`
@@ -55,5 +60,6 @@ Railway는 자동으로 다음을 감지합니다:
 
 - Railway는 자동으로 HTTPS를 제공합니다
 - 카카오맵 API 설정에서 Railway 도메인을 허용 목록에 추가해야 할 수 있습니다
-- 환경변수 변경 시 자동으로 재배포됩니다
+- **환경변수 변경 후 수동으로 재배포해야 합니다** (자동 재배포 안 됨)
+- 지도가 표시되지 않으면 [TROUBLESHOOTING_RAILWAY.md](./TROUBLESHOOTING_RAILWAY.md) 참고
 

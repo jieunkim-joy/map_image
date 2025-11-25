@@ -21,8 +21,16 @@ function initKakaoMap() {
     // 환경변수에서 카카오맵 API 키 가져오기
     const kakaoAppKey = import.meta.env.VITE_KAKAO_MAP_APP_KEY;
     
+    // 디버깅: 환경변수 확인
+    console.log('🔍 환경변수 확인:', {
+      hasKakaoMapKey: !!kakaoAppKey,
+      keyLength: kakaoAppKey?.length || 0,
+      allEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+    });
+    
     if (!kakaoAppKey) {
-      console.error('카카오맵 API 키가 설정되지 않았습니다. VITE_KAKAO_MAP_APP_KEY 환경변수를 확인하세요.');
+      console.error('❌ 카카오맵 API 키가 설정되지 않았습니다.');
+      console.error('Railway에서 VITE_KAKAO_MAP_APP_KEY 환경변수를 설정하고 재배포하세요.');
       resolve(); // 에러가 있어도 앱 실행
       return;
     }
