@@ -28,15 +28,27 @@ Railway 대시보드에서 **Variables** 탭을 확인하세요:
 - `hasKakaoMapKey: true`인지 확인
 - 에러 메시지가 있는지 확인
 
-### 4. 카카오맵 API 도메인 설정
+### 4. 카카오맵 API 도메인 설정 (401 에러 해결)
 
-카카오맵 API는 도메인 제한이 있을 수 있습니다:
+**401 Unauthorized 에러가 발생하는 경우:**
+
+카카오맵 API는 보안상 특정 도메인에서만 사용할 수 있습니다. Railway 도메인을 등록해야 합니다.
+
+**해결 방법:**
 
 1. [카카오 개발자 콘솔](https://developers.kakao.com/) 접속
-2. 내 애플리케이션 → 앱 선택
-3. **플랫폼 설정** → **Web 플랫폼 등록**
-4. Railway 도메인 추가 (예: `https://electro-search-production.up.railway.app`)
-5. 저장 후 재배포
+2. 내 애플리케이션 → 앱 선택 (API 키: `dc9b8bd337a4bbcdd54692e5c2a6a044`)
+3. **앱 설정** → **플랫폼** 탭
+4. **Web 플랫폼 등록** 클릭
+5. **사이트 도메인**에 Railway 도메인 추가:
+   - 정확한 도메인: `https://your-railway-domain.up.railway.app`
+   - 또는 와일드카드: `https://*.up.railway.app` (모든 Railway 서브도메인 허용)
+6. **저장** 클릭
+7. 몇 분 대기 후 웹사이트 새로고침
+
+**Railway 도메인 확인 방법:**
+- Railway 대시보드 → Settings → Networking/Domains
+- 또는 배포 상세 페이지에서 공개 URL 확인
 
 ### 5. Railway 로그 확인
 

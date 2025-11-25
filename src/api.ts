@@ -1,30 +1,25 @@
 import type { ChargerInfoItem, ChargerStatusSummary, ChargerStation } from './types';
 
-// API 키 (인코딩된 버전 - URL에 직접 사용)
-const ENCODED_API_KEY = import.meta.env.VITE_ENV_API_KEY || '';
-const BASE_URL = 'http://apis.data.go.kr/B552584/EvCharger/getChargerInfo';
-
 /**
  * 충전소의 모든 충전기 정보 조회
+ * 서버 프록시를 통해 호출 (CORS 및 Mixed Content 문제 해결)
  */
 export async function fetchChargerInfo(statId: string): Promise<ChargerInfoItem[]> {
   try {
-    // ⚠️ 인코딩된 API 키를 URL에 직접 사용 (이중 인코딩 방지)
-    const apiUrl = `${BASE_URL}?serviceKey=${ENCODED_API_KEY}&pageNo=1&numOfRows=9999&dataType=JSON&statId=${statId}`;
+    // 서버 프록시 엔드포인트 사용
+    const apiUrl = `/api/charger-info?statId=${encodeURIComponent(statId)}`;
     
     const response = await fetch(apiUrl);
     
     if (!response.ok) {
-      throw new Error(`API 호출 실패: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `API 호출 실패: ${response.status}`);
     }
     
     const data = await response.json();
     
-    if (data.resultCode !== '00') {
-      throw new Error(`API 에러: ${data.resultMsg} (코드: ${data.resultCode})`);
-    }
-    
-    return data.items?.item || [];
+    // 서버에서 이미 처리된 데이터 반환
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('충전기 정보 조회 실패:', error);
     throw error;
