@@ -98,19 +98,24 @@ export function MapView({
       overlaysRef.current.splice(existingIndex, 1);
     }
 
-    // 새 사용자 위치 마커 추가
-    const marker = new window.kakao.maps.Marker({
+    // 커스텀 사용자 위치 마커 HTML 생성
+    const markerDiv = document.createElement('div');
+    markerDiv.innerHTML = createUserLocationMarkerHTML();
+    markerDiv.style.cursor = 'pointer';
+    markerDiv.style.userSelect = 'none';
+    markerDiv.style.pointerEvents = 'none'; // 클릭 이벤트 방지
+
+    // 커스텀 오버레이로 사용자 위치 마커 생성
+    const overlay = new window.kakao.maps.CustomOverlay({
       position: position,
-      image: new window.kakao.maps.MarkerImage(
-        'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-        new window.kakao.maps.Size(50, 50),
-        { offset: new window.kakao.maps.Point(25, 50) }
-      ),
+      content: markerDiv,
+      yAnchor: 1, // 하단 기준
+      zIndex: 10,
     });
 
-    marker.setMap(mapRef.current);
-    (marker as any).userLocation = true;
-    overlaysRef.current.push(marker);
+    overlay.setMap(mapRef.current);
+    (overlay as any).userLocation = true;
+    overlaysRef.current.push(overlay);
   }, [userLocation]);
 
   // 충전소 핀 렌더링
@@ -219,9 +224,9 @@ function createPinHTML(
     : '';
 
   const scale = isSelected ? 'scale(1.3)' : 'scale(1)';
-  // 모든 핀: 흰색 배경, 초록색 테두리 통일
+  // 모든 핀: 흰색 배경, 회색 테두리 통일
   const backgroundColor = '#ffffff'; // 흰색 배경
-  const borderColor = '#22c55e'; // 초록색 테두리
+  const borderColor = '#CCCCC4'; // 회색 테두리
 
   return `
     <div style="position: relative; display: inline-block; transform: ${scale}; transition: transform 0.25s ease-out; z-index: ${isSelected ? 30 : 20}; cursor: pointer;">
@@ -237,6 +242,20 @@ function createPinHTML(
           <path d="M12 10L5 0H19L12 10Z" fill="${borderColor}"/>
         </svg>
       </div>
+    </div>
+  `;
+}
+
+// 사용자 위치 마커 HTML 생성 함수
+function createUserLocationMarkerHTML(): string {
+  return `
+    <div style="position: relative; display: inline-block; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));">
+      <svg width="24" height="29" viewBox="0 0 36 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 물방울 모양 핀 (상단 둥글고 하단 뾰족) -->
+        <path d="M18 0C24.6274 0 30 5.37258 30 12C30 18.6274 18 44 18 44C18 44 6 18.6274 6 12C6 5.37258 11.3726 0 18 0Z" fill="#0080FF"/>
+        <!-- 상단 중앙 흰색 원 -->
+        <circle cx="18" cy="12" r="5" fill="white"/>
+      </svg>
     </div>
   `;
 }

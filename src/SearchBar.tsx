@@ -117,16 +117,17 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="목적지를 검색하세요"
-          className="w-full bg-white border-3 border-gray-200 rounded-3xl shadow-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all"
+          className="w-full bg-white border-3 rounded-3xl shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all"
           style={{ 
             fontSize: '18px',
             fontWeight: 500,
             height: '56px',
             minHeight: '56px',
             paddingLeft: '52px',
-            paddingRight: query ? '52px' : '20px',
+            paddingRight: query ? '36px' : '20px',
             color: '#1f2937',
-            letterSpacing: '-0.01em'
+            letterSpacing: '-0.01em',
+            borderColor: '#828382'
           }}
         />
 
@@ -136,18 +137,18 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
             onClick={handleClear}
             className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors z-10"
             style={{ 
-              right: '16px',
-              width: '44px', 
-              height: '44px',
-              minWidth: '44px',
-              minHeight: '44px',
+              right: '12px',
+              width: '22px', 
+              height: '22px',
+              minWidth: '22px',
+              minHeight: '22px',
               transform: 'translateY(-50%)'
             }}
             aria-label="검색어 지우기"
           >
             <X 
               className="text-gray-600" 
-              style={{ width: '22px', height: '22px' }} 
+              style={{ width: '11px', height: '11px' }} 
               strokeWidth={3}
             />
           </button>
@@ -166,7 +167,7 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
         >
           {loading && (
             <div 
-              className="px-6 py-5 text-center text-gray-600"
+              className="px-6 py-3 text-center text-gray-600"
               style={{ fontSize: '18px' }}
             >
               검색 중...
@@ -174,7 +175,7 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
           )}
           {!loading && suggestions.length === 0 && (
             <div 
-              className="px-6 py-5 text-center text-gray-500"
+              className="px-6 py-3 text-center text-gray-500"
               style={{ fontSize: '18px' }}
             >
               검색 결과가 없습니다
@@ -184,32 +185,32 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
             <button
               key={index}
               onClick={() => handleSelectSuggestion(result)}
-              className="w-full text-left bg-white hover:bg-blue-50 active:bg-blue-100 border-b border-gray-100 last:border-b-0 transition-colors"
+              className="w-full text-left bg-white hover:bg-blue-50 active:bg-blue-100 transition-colors"
               style={{ 
-                minHeight: '64px',
-                padding: '16px 20px'
+                padding: '6px 20px',
+                borderBottom: index < suggestions.length - 1 ? '1px solid #e5e7eb' : 'none'
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div 
                   className="flex-shrink-0 bg-blue-100 rounded-full"
                   style={{ padding: '8px' }}
                 >
                   <Search 
                     className="text-blue-600" 
-                    style={{ width: '18px', height: '18px' }} 
+                    style={{ width: '12px', height: '10px' }} 
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p 
                     className="text-gray-900 truncate"
-                    style={{ fontSize: '18px', fontWeight: 600, lineHeight: '1.4' }}
+                    style={{ fontSize: '18px', fontWeight: 600, lineHeight: '1' }}
                   >
                     {result.name}
                   </p>
                   <p 
-                    className="text-gray-500 truncate mt-1"
-                    style={{ fontSize: '15px', lineHeight: '1.4' }}
+                    className="text-gray-500 truncate"
+                    style={{ fontSize: '15px', lineHeight: '1', marginTop: '1px' }}
                   >
                     {result.address}
                   </p>

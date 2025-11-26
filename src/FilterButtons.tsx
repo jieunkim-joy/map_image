@@ -16,7 +16,7 @@ export function FilterButtons({ filters, onFiltersChange }: FilterButtonsProps) 
   const filterItems = [
     { key: 'parkingFree' as const, label: '주차무료' },
     { key: 'firstFloor' as const, label: '지상' },
-    { key: 'highSpeed' as const, label: '초급속' },
+    { key: 'highSpeed' as const, label: '100kW 이상' },
   ];
 
   return (
