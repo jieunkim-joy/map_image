@@ -15,9 +15,17 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isSelectingRef = useRef(false); // 리스트에서 선택 중인지 추적
 
   // 검색어 입력 시 자동완성 (디바운싱 500ms)
   useEffect(() => {
+    // 리스트에서 선택한 경우에는 검색하지 않음
+    if (isSelectingRef.current) {
+      isSelectingRef.current = false;
+      return;
+    }
+
     if (query.length >= 2) {
       setLoading(true);
       
@@ -92,8 +100,21 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
   }
 
   const handleSelectSuggestion = (result: SearchResult) => {
-    setQuery(result.name);
+    // 1. 리스트 강제 닫기
     setShowSuggestions(false);
+    
+    // 2. 중복 검색 방지 플래그 설정
+    isSelectingRef.current = true;
+    
+    // 3. 검색창 값 업데이트
+    setQuery(result.name);
+    
+    // 4. Input 포커스 해제 (모바일 키보드 내리기)
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+    
+    // 5. 검색 결과 전달
     onSearchResult(result);
   };
 
@@ -123,6 +144,7 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
 
         {/* 검색 입력 필드 - 모바일 최적화 */}
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

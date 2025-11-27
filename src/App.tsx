@@ -184,7 +184,7 @@ export default function App() {
             errorMessage = '현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.';
             break;
           case error.TIMEOUT:
-            errorMessage = '현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.';
+            errorMessage = '위치 확인 시간이 초과되었습니다.';
             break;
         }
         
@@ -192,9 +192,9 @@ export default function App() {
         setLocationError(errorMessage);
       },
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
+        enableHighAccuracy: false, // 속도 우선 모드 (GPS 대신 Wi-Fi/네트워크 위치 사용)
+        maximumAge: 60000, // 1분 이내 캐시 데이터 활용
+        timeout: 5000, // 5초 타임아웃
       }
     );
   };
