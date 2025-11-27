@@ -7,7 +7,7 @@ import { HowToUseModal } from './HowToUseModal';
 import { MapControls } from './MapControls';
 import { ZoomControls } from './ZoomControls';
 import type { ChargerStation, FilterOptions, SearchResult, MergedStation } from './types';
-import { parseCSVData, calculateDistance } from './utils';
+import { parseCSVData } from './utils';
 import { fetchChargerInfo, aggregateChargerStatus } from './api';
 
 export default function App() {
@@ -42,6 +42,7 @@ export default function App() {
           };
           setUserLocation(loc);
           setMapCenter(loc);
+          setZoomLevel(6); // 줌 레벨
           setLocationError(null);
         },
         (error) => {
@@ -114,25 +115,7 @@ export default function App() {
   const handleSearchResult = (result: SearchResult) => {
     const searchLocation = { lat: result.lat, lng: result.lng };
     setMapCenter(searchLocation);
-
-    // 검색 위치에서 가장 가까운 충전소 찾기 (1km 반경)
-    const stationsWithDistance = filteredStations
-      .map((station) => ({
-        station,
-        distance: calculateDistance(
-          searchLocation.lat,
-          searchLocation.lng,
-          station.latitude,
-          station.longitude
-        ),
-      }))
-      .filter((item) => item.distance <= 1) // 1km 이내
-      .sort((a, b) => a.distance - b.distance);
-
-    if (stationsWithDistance.length > 0) {
-      // 가장 가까운 충전소 자동 선택
-      handleSelectStation(stationsWithDistance[0].station);
-    }
+    setZoomLevel(6); // 줌 레벨
   };
 
   // 충전소 선택 핸들러

@@ -16,26 +16,36 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
   const [loading, setLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // 검색어 입력 시 자동완성
+  // 검색어 입력 시 자동완성 (디바운싱 500ms)
   useEffect(() => {
     if (query.length >= 2) {
       setLoading(true);
-      searchPlaces(query)
-        .then((results) => {
-          setSuggestions(results);
-          setShowSuggestions(results.length > 0);
-        })
-        .catch((error) => {
-          console.error('검색 실패:', error);
-          setSuggestions([]);
-          setShowSuggestions(false);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      
+      // 디바운싱: 500ms 후에 API 호출
+      const timeoutId = setTimeout(() => {
+        searchPlaces(query)
+          .then((results) => {
+            setSuggestions(results);
+            setShowSuggestions(results.length > 0);
+          })
+          .catch((error) => {
+            console.error('검색 실패:', error);
+            setSuggestions([]);
+            setShowSuggestions(false);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }, 500);
+
+      // cleanup: 이전 타이머 취소
+      return () => {
+        clearTimeout(timeoutId);
+      };
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
+      setLoading(false);
     }
   }, [query]);
 
@@ -55,7 +65,7 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
   async function searchPlaces(keyword: string): Promise<SearchResult[]> {
     try {
       const response = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&size=5`,
+        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&size=10`,
         {
           headers: {
             Authorization: `KakaoAK ${KAKAO_REST_API_KEY}`,
