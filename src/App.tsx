@@ -10,7 +10,6 @@ import type { ChargerStation, FilterOptions, SearchResult, MergedStation } from 
 import { parseCSVData } from './utils';
 import { fetchChargerInfo, aggregateChargerStatus } from './api';
 
-// Railway 빌드 트리거를 위한 변경
 export default function App() {
   const [stations, setStations] = useState<ChargerStation[]>([]);
   const [filteredStations, setFilteredStations] = useState<ChargerStation[]>([]);

@@ -23,19 +23,19 @@ export function SearchBar({ onSearchResult }: SearchBarProps) {
       
       // 디바운싱: 500ms 후에 API 호출
       const timeoutId = setTimeout(() => {
-        searchPlaces(query)
-          .then((results) => {
-            setSuggestions(results);
-            setShowSuggestions(results.length > 0);
-          })
-          .catch((error) => {
-            console.error('검색 실패:', error);
-            setSuggestions([]);
-            setShowSuggestions(false);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+      searchPlaces(query)
+        .then((results) => {
+          setSuggestions(results);
+          setShowSuggestions(results.length > 0);
+        })
+        .catch((error) => {
+          console.error('검색 실패:', error);
+          setSuggestions([]);
+          setShowSuggestions(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       }, 500);
 
       // cleanup: 이전 타이머 취소
