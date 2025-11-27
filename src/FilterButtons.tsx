@@ -42,6 +42,7 @@ export function FilterButtons({ filters, onFiltersChange }: FilterButtonsProps) 
               boxShadow: isActive 
                 ? '0 8px 12px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -4px rgba(37, 99, 235, 0.3)' 
                 : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+              whiteSpace: 'nowrap', // 텍스트 줄바꿈 방지
             }}
           >
             {item.label}

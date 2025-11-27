@@ -8,6 +8,7 @@ interface MapViewProps {
   center: { lat: number; lng: number };
   userLocation: { lat: number; lng: number } | null;
   zoomLevel: number;
+  onMapReady?: (map: any) => void; // map 인스턴스 전달 콜백
 }
 
 declare global {
@@ -23,6 +24,7 @@ export function MapView({
   center,
   userLocation,
   zoomLevel,
+  onMapReady,
 }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -55,6 +57,11 @@ export function MapView({
       const map = new window.kakao.maps.Map(container, options);
       mapRef.current = map;
       isInitializedRef.current = true;
+      
+      // map 인스턴스를 부모 컴포넌트에 전달
+      if (onMapReady) {
+        onMapReady(map);
+      }
 
       // 지도 드래그 이벤트 리스너 추가
       window.kakao.maps.event.addListener(map, 'dragstart', () => {
