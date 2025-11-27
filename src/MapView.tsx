@@ -28,6 +28,7 @@ export function MapView({
   const mapRef = useRef<any>(null);
   const overlaysRef = useRef<any[]>([]);
   const isInitializedRef = useRef(false);
+  const isMapDraggingRef = useRef(false); // 지도 드래그 상태 추적
 
   // 카카오맵 초기화
   useEffect(() => {
@@ -54,6 +55,18 @@ export function MapView({
       const map = new window.kakao.maps.Map(container, options);
       mapRef.current = map;
       isInitializedRef.current = true;
+
+      // 지도 드래그 이벤트 리스너 추가
+      window.kakao.maps.event.addListener(map, 'dragstart', () => {
+        isMapDraggingRef.current = true;
+      });
+      
+      window.kakao.maps.event.addListener(map, 'dragend', () => {
+        // 드래그 종료 후 약간의 지연을 두어 클릭 이벤트와 구분
+        setTimeout(() => {
+          isMapDraggingRef.current = false;
+        }, 100);
+      });
 
       // 지도 타입 컨트롤 제거 (커스텀 UI 사용)
       // 줌 컨트롤 제거 (커스텀 UI 사용)
@@ -151,15 +164,101 @@ export function MapView({
       contentDiv.style.userSelect = 'none';
       contentDiv.style.touchAction = 'manipulation';
       
-      // 클릭/터치 이벤트
-      const handleClick = (e: Event) => {
+      // 드래그 감지를 위한 변수
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartTime = 0;
+      let isDragging = false;
+      const DRAG_THRESHOLD = 10; // 픽셀 단위 이동 거리 임계값
+      const CLICK_TIME_THRESHOLD = 300; // 밀리초 단위 클릭 시간 임계값
+      
+      // 터치 시작
+      const handleTouchStart = (e: TouchEvent) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchStartTime = Date.now();
+        isDragging = false;
+      };
+      
+      // 터치 이동 (드래그 감지)
+      const handleTouchMove = (e: TouchEvent) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          const deltaX = Math.abs(touch.clientX - touchStartX);
+          const deltaY = Math.abs(touch.clientY - touchStartY);
+          const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+          
+          // 일정 거리 이상 이동하면 드래그로 판단
+          if (distance > DRAG_THRESHOLD) {
+            isDragging = true;
+          }
+        }
+      };
+      
+      // 클릭 영역 체크 (중앙부 50% 영역만 클릭 가능)
+      const isClickInCenterArea = (e: MouseEvent | TouchEvent): boolean => {
+        const rect = contentDiv.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const clickX = 'touches' in e ? e.touches[0]?.clientX || e.changedTouches[0].clientX : e.clientX;
+        const clickY = 'touches' in e ? e.touches[0]?.clientY || e.changedTouches[0].clientY : e.clientY;
+        
+        // 중앙부 50% 영역 계산
+        const allowedWidth = rect.width * 0.5;
+        const allowedHeight = rect.height * 0.5;
+        const deltaX = Math.abs(clickX - centerX);
+        const deltaY = Math.abs(clickY - centerY);
+        
+        return deltaX <= allowedWidth / 2 && deltaY <= allowedHeight / 2;
+      };
+      
+      // 클릭/터치 이벤트 처리
+      const handleClick = (e: MouseEvent) => {
+        // 지도가 드래그 중이면 클릭으로 간주하지 않음
+        if (isMapDraggingRef.current) {
+          return;
+        }
+        
+        // 중앙부 영역 체크
+        if (!isClickInCenterArea(e)) {
+          return;
+        }
+        
         e.stopPropagation();
         e.preventDefault();
         onSelectStation(station);
       };
       
+      const handleTouchEnd = (e: TouchEvent) => {
+        const touchEndTime = Date.now();
+        const touchDuration = touchEndTime - touchStartTime;
+        
+        // 지도가 드래그 중이면 클릭으로 간주하지 않음
+        if (isMapDraggingRef.current) {
+          return;
+        }
+        
+        // 드래그 중이거나 시간이 너무 길면 클릭으로 간주하지 않음
+        if (isDragging || touchDuration > CLICK_TIME_THRESHOLD) {
+          return;
+        }
+        
+        // 중앙부 영역 체크
+        if (!isClickInCenterArea(e)) {
+          return;
+        }
+        
+        e.stopPropagation();
+        e.preventDefault();
+        onSelectStation(station);
+      };
+      
+      // 이벤트 리스너 등록
       contentDiv.addEventListener('click', handleClick);
-      contentDiv.addEventListener('touchend', handleClick);
+      contentDiv.addEventListener('touchstart', handleTouchStart, { passive: true });
+      contentDiv.addEventListener('touchmove', handleTouchMove, { passive: true });
+      contentDiv.addEventListener('touchend', handleTouchEnd);
 
       // 커스텀 오버레이 생성
       const overlay = new window.kakao.maps.CustomOverlay({
