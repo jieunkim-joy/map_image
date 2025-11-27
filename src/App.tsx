@@ -120,12 +120,14 @@ export default function App() {
   const handleSearchResult = (result: SearchResult) => {
     const searchLocation = { lat: result.lat, lng: result.lng };
     setMapCenter(searchLocation);
+    setZoomLevel(5); // state 동기화
     
-    // 지도 인스턴스가 있으면 직접 줌 레벨 설정 (state와 실제 지도 동기화)
-    if (mapInstanceRef.current && window.kakao) {
-      mapInstanceRef.current.setLevel(5, { animate: true });
-    }
-    setZoomLevel(5); // 일정한 줌 레벨 5로 통일
+    // 지도 중심 이동이 완전히 끝난 뒤에 줌 레벨 변경 (순서 보장)
+    setTimeout(() => {
+      if (mapInstanceRef.current && window.kakao) {
+        mapInstanceRef.current.setLevel(5, { animate: true });
+      }
+    }, 100);
   };
 
   // 충전소 선택 핸들러
@@ -171,14 +173,20 @@ export default function App() {
         setUserLocation(loc);
         setMapCenter(loc);
         setLocationError(null);
+        setZoomLevel(5); // state 동기화
         
         // 카카오맵 인스턴스가 있으면 직접 panTo 및 줌 레벨 설정
         if (mapInstanceRef.current && window.kakao) {
           const moveLatLon = new window.kakao.maps.LatLng(loc.lat, loc.lng);
           mapInstanceRef.current.panTo(moveLatLon);
-          mapInstanceRef.current.setLevel(5, { animate: true }); // 반경 1km 표시를 위한 줌 레벨 5로 초기화
+          
+          // 지도 중심 이동이 완전히 끝난 뒤에 줌 레벨 변경 (순서 보장)
+          setTimeout(() => {
+            if (mapInstanceRef.current && window.kakao) {
+              mapInstanceRef.current.setLevel(5, { animate: true }); // 반경 1km 표시를 위한 줌 레벨 5로 초기화
+            }
+          }, 100);
         }
-        setZoomLevel(5); // state도 동기화
       },
       (error) => {
         let errorMessage = '현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.';
