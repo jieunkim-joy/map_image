@@ -90,6 +90,20 @@ export function MapView({
     });
   }, []);
 
+  // 바텀시트 열림/닫힘에 따라 지도 조작 제어
+  useEffect(() => {
+    if (!mapRef.current || !isInitializedRef.current || !window.kakao) return;
+
+    // 바텀시트가 열려있으면 (selectedStation이 null이 아니면) 지도 조작 막기
+    if (selectedStation) {
+      mapRef.current.setZoomable(false); // 핀치 줌 비활성화
+      mapRef.current.setDraggable(false); // 지도 이동 비활성화
+    } else {
+      mapRef.current.setZoomable(true); // 핀치 줌 활성화
+      mapRef.current.setDraggable(true); // 지도 이동 활성화
+    }
+  }, [selectedStation]);
+
   // 지도 중심 변경
   useEffect(() => {
     if (!mapRef.current || !isInitializedRef.current) return;
@@ -316,9 +330,8 @@ function createPinHTML(
   isLowestPrice: boolean,
   isSelected: boolean
 ): string {
-  const cardShadow = isSelected 
-    ? '0 0 0 4px #60a5fa, 0 12px 24px -6px rgba(0, 0, 0, 0.25)' 
-    : '0 8px 16px -4px rgba(0, 0, 0, 0.2)';
+  // 모든 핀 동일한 그림자 (선택된 핀의 파란색 외곽 테두리 제거)
+  const cardShadow = '0 8px 16px -4px rgba(0, 0, 0, 0.2)';
   
   // 최저가: 글자색 빨간색, 일반: 검정색 (발광효과 없음)
   const priceColor = isLowestPrice ? '#dc2626' : '#1f2937';
@@ -330,9 +343,9 @@ function createPinHTML(
     : '';
 
   const scale = isSelected ? 'scale(1.3)' : 'scale(1)';
-  // 모든 핀: 흰색 배경, 회색 테두리 통일
+  // 흰색 배경, 선택 여부에 따라 테두리 색상 변경
   const backgroundColor = '#ffffff'; // 흰색 배경
-  const borderColor = '#CCCCC4'; // 회색 테두리
+  const borderColor = isSelected ? '#2563eb' : '#CCCCC4'; // 선택 시 파란색, 미선택 시 회색
 
   return `
     <div style="position: relative; display: inline-block; transform: ${scale}; transition: transform 0.25s ease-out; z-index: ${isSelected ? 30 : 20}; cursor: pointer;">
