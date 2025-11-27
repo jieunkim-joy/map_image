@@ -46,22 +46,52 @@ function initKakaoMap() {
       script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false`;
       script.async = true;
       script.onload = () => {
-        // SDK 로드 대기
-        const checkKakao = setInterval(() => {
-          if (window.kakao) {
+        let checkKakao: number | null = null;
+        let timeoutId: number | null = null;
+        let isResolved = false;
+
+        const cleanup = () => {
+          if (checkKakao) {
             clearInterval(checkKakao);
-            window.kakao.maps.load(() => {
-              resolve();
-            });
+            checkKakao = null;
+          }
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+          }
+        };
+
+        // SDK 로드 대기
+        checkKakao = setInterval(() => {
+          if (window.kakao && window.kakao.maps) {
+            cleanup();
+            if (!isResolved) {
+              isResolved = true;
+              window.kakao.maps.load(() => {
+                resolve();
+              });
+            }
           }
         }, 100);
 
-        // 타임아웃 (10초)
-        setTimeout(() => {
-          clearInterval(checkKakao);
-          console.error('카카오맵 SDK 로드 실패');
-          resolve(); // 에러가 있어도 앱 실행
-        }, 10000);
+        // 타임아웃 (15초로 증가)
+        timeoutId = setTimeout(() => {
+          cleanup();
+          if (!isResolved) {
+            isResolved = true;
+            // 타임아웃 발생 시에도 SDK가 로드되었는지 확인
+            if (window.kakao && window.kakao.maps) {
+              // SDK는 로드되었지만 maps.load가 호출되지 않은 경우
+              window.kakao.maps.load(() => {
+                resolve();
+              });
+            } else {
+              // 실제로 SDK 로드 실패
+              console.warn('⚠️ 카카오맵 SDK 로드 타임아웃 (지도는 계속 작동할 수 있습니다)');
+              resolve(); // 에러가 있어도 앱 실행
+            }
+          }
+        }, 15000);
       };
       script.onerror = () => {
         console.error('카카오맵 SDK 스크립트 로드 실패');

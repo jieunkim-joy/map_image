@@ -64,8 +64,8 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
       <div
         className="fixed bottom-0 left-0 right-0 bg-white rounded-t-4xl shadow-2xl z-50 transition-transform relative"
         style={{
-          height: '50vh',
-          maxHeight: '50vh',
+          height: '50dvh', // Dynamic Viewport Height: 모바일 브라우저 UI 고려
+          maxHeight: '50dvh',
           transform: `translateY(${currentY}px)`,
           display: 'flex',
           flexDirection: 'column',
