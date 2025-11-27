@@ -116,7 +116,7 @@ export function MapView({
   useEffect(() => {
     if (!mapRef.current || !isInitializedRef.current) return;
 
-    mapRef.current.setLevel(zoomLevel);
+    mapRef.current.setLevel(zoomLevel, { animate: true });
   }, [zoomLevel]);
 
   // 사용자 위치 마커
@@ -144,7 +144,7 @@ export function MapView({
       position: position,
       content: markerDiv,
       yAnchor: 1, // 하단 기준
-      zIndex: 10,
+      zIndex: 40, // 충전소 핀(zIndex: 20-30)보다 위에 표시
     });
 
     overlay.setMap(mapRef.current);
