@@ -116,13 +116,13 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
           }}
         >
 
-          {/* 내용 - 모바일 최적화 디자인 */}
-          <div className="px-4 pt-4 pb-8 space-y-3">
+          {/* 내용 - Compact & Grid 레이아웃 */}
+          <div className="px-4 pt-4 pb-8 space-y-4">
             {/* 1. 충전소 이름 및 태그 */}
             <div>
               <h2 
                 className="text-gray-900 mb-2"
-                style={{ fontSize: '25px', fontWeight: 700, lineHeight: '1.3' }}
+                style={{ fontSize: '28px', fontWeight: 700, lineHeight: '1.3' }}
               >
                 {station.stationName}
               </h2>
@@ -130,7 +130,7 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                 {station.parkingFree && (
                   <span 
                     className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg"
-                    style={{ fontSize: '18px', fontWeight: 700 }}
+                    style={{ fontSize: '19px', fontWeight: 700 }}
                   >
                     주차무료
                   </span>
@@ -138,7 +138,7 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                 {station.firstFloor && (
                   <span 
                     className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 rounded-lg"
-                    style={{ fontSize: '18px', fontWeight: 700 }}
+                    style={{ fontSize: '19px', fontWeight: 700 }}
                   >
                     지상
                   </span>
@@ -146,230 +146,203 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
               </div>
             </div>
 
-            {/* 2. 충전기 현황 */}
-            <div>
-              {/* 라벨 */}
-              <div className="flex items-center gap-2 mb-0">
-                <Zap 
-                  style={{ width: '18px', height: '18px' }}
-                  className={isAllBusy ? 'text-red-600' : 'text-green-600'} 
-                />
-                <h3 
-                  className="text-gray-900"
-                  style={{ fontSize: '19px', fontWeight: 600 }}
-                >
-                  충전기 현황
-                </h3>
+            {/* 2. 2열 그리드 레이아웃: 이용 가능 충전기 & 요금 정보 */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* 왼쪽: 이용 가능 충전기 */}
+              <div className="flex flex-col">
+                {/* 라벨 */}
+                <div className="flex items-center gap-2 mb-1">
+                  <Zap 
+                    style={{ width: '20px', height: '20px' }}
+                    className={isAllBusy ? 'text-red-600' : 'text-green-600'} 
+                  />
+                  <h3 
+                    className="text-gray-900"
+                    style={{ fontSize: '20px', fontWeight: 600 }}
+                  >
+                    이용 가능 충전기
+                  </h3>
+                </div>
+                
+                {/* 정보 박스 */}
+                {statusSummary ? (
+                  <div 
+                    className="rounded-xl p-3 flex-1 flex flex-col justify-between"
+                    style={{
+                      backgroundColor: isAllBusy ? '#fef2f2' : '#f8fafc',
+                      border: isAllBusy ? '2px solid #fecaca' : '2px solid #e2e8f0',
+                      minHeight: '140px',
+                    }}
+                  >
+                    {/* 경고 메시지 */}
+                    {isAllBusy && (
+                      <div 
+                        className="rounded-lg p-2 mb-2 text-center"
+                        style={{
+                          backgroundColor: '#fee2e2',
+                          border: '1.5px solid #fca5a5',
+                        }}
+                      >
+                        <p 
+                          className="text-red-800"
+                          style={{ fontSize: '16px', fontWeight: 600 }}
+                        >
+                          ⚠️ 모든 충전기 사용 중
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 충전기 타입 정보 */}
+                    <div className="space-y-2.5">
+                      {statusSummary.regularChargers.total > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className="text-gray-900"
+                            style={{ fontSize: '18px', fontWeight: 700, minWidth: '80px' }}
+                          >
+                            50kW
+                          </span>
+                          <span 
+                            style={{ 
+                              width: '1px',
+                              height: '20px',
+                              backgroundColor: '#d1d5db'
+                            }}
+                          />
+                          <div className="flex items-center gap-1">
+                            <span 
+                              style={{ 
+                                fontSize: '22px',
+                                fontWeight: 700,
+                                color: statusSummary.regularChargers.available > 0 ? '#16a34a' : '#dc2626',
+                              }}
+                            >
+                              {statusSummary.regularChargers.available}
+                            </span>
+                            <span 
+                              className="text-gray-500"
+                              style={{ fontSize: '16px', fontWeight: 400 }}
+                            >
+                              /{statusSummary.regularChargers.total}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {statusSummary.fastChargers.total > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className="text-gray-900"
+                            style={{ fontSize: '18px', fontWeight: 700, minWidth: '80px' }}
+                          >
+                            100kW 이상
+                          </span>
+                          <span 
+                            style={{ 
+                              width: '1px',
+                              height: '20px',
+                              backgroundColor: '#d1d5db'
+                            }}
+                          />
+                          <div className="flex items-center gap-1">
+                            <span 
+                              style={{ 
+                                fontSize: '22px',
+                                fontWeight: 700,
+                                color: statusSummary.fastChargers.available > 0 ? '#16a34a' : '#dc2626',
+                              }}
+                            >
+                              {statusSummary.fastChargers.available}
+                            </span>
+                            <span 
+                              className="text-gray-500"
+                              style={{ fontSize: '16px', fontWeight: 400 }}
+                            >
+                              /{statusSummary.fastChargers.total}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="rounded-xl p-3 bg-gray-50 text-center flex items-center justify-center flex-1"
+                    style={{ 
+                      border: '2px solid #e2e8f0',
+                      minHeight: '140px',
+                    }}
+                  >
+                    <p 
+                      className="text-gray-500"
+                      style={{ fontSize: '16px' }}
+                    >
+                      충전기 상태 정보를 불러오는 중...
+                    </p>
+                  </div>
+                )}
               </div>
-              
-              {/* 정보 박스 */}
-              {statusSummary ? (
+
+              {/* 오른쪽: 요금 정보 */}
+              <div className="flex flex-col">
+                {/* 라벨 */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span style={{ fontSize: '20px' }}>💰</span>
+                  <h3 
+                    className="text-gray-900"
+                    style={{ fontSize: '20px', fontWeight: 600 }}
+                  >
+                    요금
+                  </h3>
+                </div>
+                
+                {/* 정보 박스 */}
                 <div 
-                  className="rounded-xl p-2"
+                  className="rounded-xl p-3 flex-1 flex items-center justify-center"
                   style={{
-                    marginTop: '-4px',
-                    backgroundColor: isAllBusy ? '#fef2f2' : '#f8fafc',
-                    border: isAllBusy ? '2px solid #fecaca' : '2px solid #e2e8f0',
+                    backgroundColor: '#f8fafc',
+                    border: '2px solid #e2e8f0',
+                    minHeight: '140px',
                   }}
                 >
-                  {/* 경고 메시지 */}
-                  {isAllBusy && (
-                    <div 
-                      className="rounded-xl p-2.5 mb-2.5 text-center"
-                      style={{
-                        backgroundColor: '#fee2e2',
-                        border: '1.5px solid #fca5a5',
-                      }}
+                  <div className="flex items-baseline gap-1.5">
+                    <span 
+                      className="text-gray-900"
+                      style={{ fontSize: '30px', fontWeight: 700, lineHeight: '1' }}
                     >
-                      <p 
-                        className="text-red-800"
-                        style={{ fontSize: '14px', fontWeight: 600 }}
-                      >
-                        ⚠️ 모든 충전기 사용 중
-                      </p>
-                    </div>
-                  )}
-
-                  {/* 충전기 타입 정보 */}
-                  <div className="space-y-2">
-                    {statusSummary.regularChargers.total > 0 && (
-                      <div className="flex items-center gap-3">
-                        <span 
-                          className="text-gray-900"
-                          style={{ fontSize: '16px', fontWeight: 700, minWidth: '70px' }}
-                        >
-                          급속
-                        </span>
-                        <span 
-                          style={{ 
-                            width: '1px',
-                            height: '18px',
-                            backgroundColor: '#d1d5db'
-                          }}
-                        />
-                        <div className="flex items-center gap-0">
-                          <span 
-                            style={{ 
-                              fontSize: '18px',
-                              fontWeight: 700,
-                              color: statusSummary.regularChargers.available > 0 ? '#16a34a' : '#dc2626',
-                            }}
-                          >
-                            {statusSummary.regularChargers.available}
-                          </span>
-                          <span 
-                            className="text-gray-500"
-                            style={{ fontSize: '14px', fontWeight: 400 }}
-                          >
-                            /{statusSummary.regularChargers.total}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {statusSummary.fastChargers.total > 0 && (
-                      <div className="flex items-center gap-3">
-                        <span 
-                          className="text-gray-900"
-                          style={{ fontSize: '16px', fontWeight: 700, minWidth: '70px' }}
-                        >
-                          초급속
-                        </span>
-                        <span 
-                          style={{ 
-                            width: '1px',
-                            height: '18px',
-                            backgroundColor: '#d1d5db'
-                          }}
-                        />
-                        <div className="flex items-center gap-0">
-                          <span 
-                            style={{ 
-                              fontSize: '18px',
-                              fontWeight: 700,
-                              color: statusSummary.fastChargers.available > 0 ? '#16a34a' : '#dc2626',
-                            }}
-                          >
-                            {statusSummary.fastChargers.available}
-                          </span>
-                          <span 
-                            className="text-gray-500"
-                            style={{ fontSize: '14px', fontWeight: 400 }}
-                          >
-                            /{statusSummary.fastChargers.total}
-                          </span>
-                        </div>
-                      </div>
-                    )}
+                      {station.minPrice}원
+                    </span>
+                    <span 
+                      className="text-gray-600"
+                      style={{ fontSize: '16px', fontWeight: 500 }}
+                    >
+                      /kWh
+                    </span>
                   </div>
                 </div>
-              ) : (
-                <div 
-                  className="rounded-xl p-2 bg-gray-50 text-center"
-                  style={{ 
-                    marginTop: '-4px',
-                    border: '2px solid #e2e8f0' 
-                  }}
-                >
-                  <p 
-                    className="text-gray-500"
-                    style={{ fontSize: '14px' }}
-                  >
-                    충전기 상태 정보를 불러오는 중...
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* 3. 가격 정보 */}
-            <div>
-              {/* 구분선 */}
-              <div 
-                style={{ 
-                  borderTop: '1px dashed #d1d5db',
-                  marginTop: '12px',
-                  marginBottom: '4px'
-                }}
-              />
-              
-              {/* 라벨 */}
-              <div className="flex items-center gap-2 mb-0">
-                <span style={{ fontSize: '18px' }}>💰</span>
-                <h3 
-                  className="text-gray-900"
-                  style={{ fontSize: '19px', fontWeight: 600 }}
-                >
-                  요금
-                </h3>
-              </div>
-              
-              {/* 정보 박스 */}
-              <div 
-                className="rounded-xl p-2"
-                style={{
-                  marginTop: '-4px',
-                  backgroundColor: '#fef9c3',
-                  border: '2px solid #fbbf24',
-                }}
-              >
-                <div className="flex items-baseline gap-1.5">
-                  <span 
-                    className="text-amber-900"
-                    style={{ fontSize: '26px', fontWeight: 700, lineHeight: '1' }}
-                  >
-                    {station.minPrice}원
-                  </span>
-                  <span 
-                    className="text-gray-500"
-                    style={{ fontSize: '13px', fontWeight: 400 }}
-                  >
-                    /kWh
-                  </span>
-                </div>
               </div>
             </div>
 
-            {/* 4. 주소 정보 */}
+            {/* 3. 주소 정보 (Full Width) */}
             <div>
-              {/* 구분선 */}
-              <div 
-                style={{ 
-                  borderTop: '1px dashed #d1d5db',
-                  marginTop: '12px',
-                  marginBottom: '4px'
-                }}
-              />
-              
-              {/* 라벨 */}
-              <div className="flex items-center gap-2 mb-0">
-                <span style={{ fontSize: '18px' }}>📍</span>
-                <h3 
-                  className="text-gray-900"
-                  style={{ fontSize: '19px', fontWeight: 600 }}
-                >
-                  위치
-                </h3>
-              </div>
-              
               {/* 정보 박스 */}
               <div 
-                className="rounded-xl p-2"
+                className="rounded-xl p-3"
                 style={{
-                  marginTop: '-4px',
                   backgroundColor: '#f8fafc',
                   border: '2px solid #e2e8f0',
                 }}
               >
                 <p 
                   className="text-gray-900 mb-1"
-                  style={{ fontSize: '15px', lineHeight: '1.4', fontWeight: 400 }}
+                  style={{ fontSize: '17px', lineHeight: '1.5', fontWeight: 400 }}
                 >
                   {station.address}
                 </p>
                 {station.locationDetail && (
                   <p 
                     className="text-gray-500"
-                    style={{ fontSize: '13px', lineHeight: '1.4' }}
+                    style={{ fontSize: '15px', lineHeight: '1.5' }}
                   >
                     {station.locationDetail}
                   </p>
@@ -377,20 +350,19 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
               </div>
             </div>
 
-            {/* 5. 길안내 버튼 */}
+            {/* 4. 길안내 버튼 */}
             <button
               onClick={handleNavigation}
               className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
               style={{ 
-                minHeight: '52px',
-                height: '52px',
-                fontSize: '16px',
+                minHeight: '56px',
+                height: '56px',
+                fontSize: '18px',
                 fontWeight: 600,
-                marginBottom: '24px'
               }}
             >
               <Navigation 
-                style={{ width: '18px', height: '18px' }} 
+                style={{ width: '20px', height: '20px' }} 
                 strokeWidth={2.5}
               />
               길안내
