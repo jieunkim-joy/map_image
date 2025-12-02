@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigation, X, Zap } from 'lucide-react';
+import { Navigation, X } from 'lucide-react';
 import type { MergedStation } from './types';
 
 interface BottomSheetProps {
@@ -60,41 +60,40 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
         onClick={onClose}
       />
 
-      {/* 바텀 시트 */}
+      {/* 바텀 시트 - 스크롤 없는 컴팩트 디자인 */}
       <div
-        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-4xl shadow-2xl z-50 transition-transform relative"
+        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 transition-transform relative"
         style={{
-          height: '50dvh', // Dynamic Viewport Height: 모바일 브라우저 UI 고려
-          maxHeight: '50dvh',
+          maxHeight: 'auto',
           transform: `translateY(${currentY}px)`,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {/* 닫기 버튼 - 카드 우측 상단 모서리 */}
+        {/* 닫기 버튼 - 오른쪽 상단에 위치 */}
         <button
           onClick={onClose}
-          className="absolute right-5 flex items-center justify-center rounded-full transition-all hover:bg-gray-100 active:bg-gray-200 z-30"
+          className="absolute flex items-center justify-center rounded-full transition-all hover:bg-gray-100 active:bg-gray-200 z-30"
           style={{ 
-            top: '15px',
-            width: '25px', 
-            height: '25px',
-            minWidth: '25px',
-            minHeight: '25px',
+            top: '12px',
+            right: '12px',
+            width: '20px', 
+            height: '20px',
+            minWidth: '20px',
+            minHeight: '20px',
           }}
           aria-label="닫기"
         >
           <X 
             className="text-gray-500" 
-            style={{ width: '16px', height: '16px' }} 
+            style={{ width: '12px', height: '12px' }} 
             strokeWidth={2.5}
           />
         </button>
 
-        {/* 헤더 영역 (드래그 핸들) */}
+        {/* 컴팩트 헤더 (드래그 핸들) */}
         <div 
-          className="sticky top-0 bg-white rounded-t-4xl flex items-center justify-center border-b-2 border-gray-200 z-20 flex-shrink-0"
-          style={{ paddingTop: '8px', paddingBottom: '6px', minHeight: '40px' }}
+          className="relative flex items-center justify-center px-4 pt-2 pb-1 border-b border-gray-200"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -102,117 +101,86 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
           {/* 드래그 핸들 */}
           <div 
             className="bg-gray-300 rounded-full"
-            style={{ width: '48px', height: '6px' }}
+            style={{ width: '40px', height: '4px' }}
           />
         </div>
 
-        {/* 스크롤 가능한 내용 영역 */}
-        <div 
-          className="flex-1 overflow-y-auto"
-          style={{
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#cbd5e1 #f1f5f9',
-          }}
-        >
-
-          {/* 내용 - Compact & Grid 레이아웃 */}
-          <div className="px-4 pt-4 pb-8 space-y-4">
-            {/* 1. 충전소 이름 및 태그 */}
-            <div>
-              <h2 
-                className="text-gray-900 mb-2"
-                style={{ fontSize: '28px', fontWeight: 700, lineHeight: '1.3' }}
-              >
-                {station.stationName}
-              </h2>
-              <div className="flex gap-1.5 flex-wrap">
-                {station.parkingFree && (
-                  <span 
-                    className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg"
-                    style={{ fontSize: '19px', fontWeight: 700 }}
-                  >
-                    주차무료
-                  </span>
-                )}
-                {station.firstFloor && (
-                  <span 
-                    className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 rounded-lg"
-                    style={{ fontSize: '19px', fontWeight: 700 }}
-                  >
-                    지상
-                  </span>
-                )}
-              </div>
+        {/* 내용 영역 - 스크롤 없음, 모든 정보 한 화면에 */}
+        <div className="flex-1 px-4 py-3" style={{ overflow: 'hidden' }}>
+          {/* 1. 충전소 이름 + 태그 */}
+          <div className="mb-3">
+            <h2 
+              className="text-gray-900 mb-1.5"
+              style={{ fontSize: '22px', fontWeight: 700, lineHeight: '1.2' }}
+            >
+              {station.stationName}
+            </h2>
+            <div className="flex gap-1.5">
+              {station.parkingFree && (
+                <span 
+                  className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md"
+                  style={{ fontSize: '16px', fontWeight: 600 }}
+                >
+                  주차무료
+                </span>
+              )}
+              {station.firstFloor && (
+                <span 
+                  className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 rounded-md"
+                  style={{ fontSize: '16px', fontWeight: 600 }}
+                >
+                  지상
+                </span>
+              )}
             </div>
+          </div>
 
-            {/* 2. 2열 그리드 레이아웃: 이용 가능 충전기 & 요금 정보 */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* 왼쪽: 이용 가능 충전기 */}
-              <div className="flex flex-col">
-                {/* 라벨 */}
-                <div className="flex items-center gap-2 mb-1">
-                  <Zap 
-                    style={{ width: '20px', height: '20px' }}
-                    className={isAllBusy ? 'text-red-600' : 'text-green-600'} 
-                  />
-                  <h3 
-                    className="text-gray-900"
-                    style={{ fontSize: '20px', fontWeight: 600 }}
-                  >
-                    이용 가능 충전기
-                  </h3>
-                </div>
-                
-                {/* 정보 박스 */}
+          {/* 2. 2열 그리드: 충전기 현 상태 + 가격 */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {/* 왼쪽: 이용 가능 충전기 */}
+            <div>
+              <div 
+                className="rounded-lg p-2.5 h-full flex flex-col justify-center"
+                style={{
+                  backgroundColor: isAllBusy ? '#fef2f2' : '#f8fafc',
+                  border: isAllBusy ? '1.5px solid #fecaca' : '1.5px solid #e2e8f0',
+                  minHeight: '100px',
+                }}
+              >
                 {statusSummary ? (
-                  <div 
-                    className="rounded-xl p-3 flex-1 flex flex-col justify-between"
-                    style={{
-                      backgroundColor: isAllBusy ? '#fef2f2' : '#f8fafc',
-                      border: isAllBusy ? '2px solid #fecaca' : '2px solid #e2e8f0',
-                      minHeight: '140px',
-                    }}
-                  >
+                  <div className="flex flex-col justify-center items-center gap-2">
                     {/* 경고 메시지 */}
                     {isAllBusy && (
                       <div 
-                        className="rounded-lg p-2 mb-2 text-center"
+                        className="rounded px-1.5 py-1 text-center"
                         style={{
                           backgroundColor: '#fee2e2',
-                          border: '1.5px solid #fca5a5',
+                          border: '1px solid #fca5a5',
                         }}
                       >
                         <p 
                           className="text-red-800"
-                          style={{ fontSize: '16px', fontWeight: 600 }}
+                          style={{ fontSize: '14px', fontWeight: 600 }}
                         >
-                          ⚠️ 모든 충전기 사용 중
+                          ⚠️ 전부 사용중
                         </p>
                       </div>
                     )}
 
-                    {/* 충전기 타입 정보 */}
-                    <div className="space-y-2.5">
+                    {/* 충전기 정보 */}
+                    <div className="space-y-1.5 w-full">
                       {statusSummary.regularChargers.total > 0 && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between">
                           <span 
-                            className="text-gray-900"
-                            style={{ fontSize: '18px', fontWeight: 700, minWidth: '80px' }}
+                            className="text-gray-700"
+                            style={{ fontSize: '14px', fontWeight: 600 }}
                           >
                             50kW
                           </span>
-                          <span 
-                            style={{ 
-                              width: '1px',
-                              height: '20px',
-                              backgroundColor: '#d1d5db'
-                            }}
-                          />
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-0.5">
                             <span 
                               style={{ 
-                                fontSize: '22px',
+                                fontSize: '14px',
                                 fontWeight: 700,
                                 color: statusSummary.regularChargers.available > 0 ? '#16a34a' : '#dc2626',
                               }}
@@ -221,7 +189,7 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                             </span>
                             <span 
                               className="text-gray-500"
-                              style={{ fontSize: '16px', fontWeight: 400 }}
+                              style={{ fontSize: '14px', fontWeight: 400 }}
                             >
                               /{statusSummary.regularChargers.total}
                             </span>
@@ -230,24 +198,17 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                       )}
 
                       {statusSummary.fastChargers.total > 0 && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between">
                           <span 
-                            className="text-gray-900"
-                            style={{ fontSize: '18px', fontWeight: 700, minWidth: '80px' }}
+                            className="text-gray-700"
+                            style={{ fontSize: '14px', fontWeight: 600 }}
                           >
-                            100kW 이상
+                            100kW+
                           </span>
-                          <span 
-                            style={{ 
-                              width: '1px',
-                              height: '20px',
-                              backgroundColor: '#d1d5db'
-                            }}
-                          />
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-0.5">
                             <span 
                               style={{ 
-                                fontSize: '22px',
+                                fontSize: '14px',
                                 fontWeight: 700,
                                 color: statusSummary.fastChargers.available > 0 ? '#16a34a' : '#dc2626',
                               }}
@@ -256,7 +217,7 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                             </span>
                             <span 
                               className="text-gray-500"
-                              style={{ fontSize: '16px', fontWeight: 400 }}
+                              style={{ fontSize: '14px', fontWeight: 400 }}
                             >
                               /{statusSummary.fastChargers.total}
                             </span>
@@ -266,108 +227,92 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                     </div>
                   </div>
                 ) : (
-                  <div 
-                    className="rounded-xl p-3 bg-gray-50 text-center flex items-center justify-center flex-1"
-                    style={{ 
-                      border: '2px solid #e2e8f0',
-                      minHeight: '140px',
-                    }}
-                  >
+                  <div className="h-full flex items-center justify-center">
                     <p 
-                      className="text-gray-500"
-                      style={{ fontSize: '16px' }}
+                      className="text-gray-400 text-center"
+                      style={{ fontSize: '14px' }}
                     >
-                      충전기 상태 정보를 불러오는 중...
+                      로딩중...
                     </p>
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* 오른쪽: 요금 정보 */}
-              <div className="flex flex-col">
-                {/* 라벨 */}
-                <div className="flex items-center gap-2 mb-1">
-                  <span style={{ fontSize: '20px' }}>💰</span>
-                  <h3 
-                    className="text-gray-900"
-                    style={{ fontSize: '20px', fontWeight: 600 }}
-                  >
-                    요금
-                  </h3>
-                </div>
-                
-                {/* 정보 박스 */}
-                <div 
-                  className="rounded-xl p-3 flex-1 flex items-center justify-center"
-                  style={{
-                    backgroundColor: '#f8fafc',
-                    border: '2px solid #e2e8f0',
-                    minHeight: '140px',
-                  }}
-                >
-                  <div className="flex items-baseline gap-1.5">
+            {/* 오른쪽: 요금 정보 */}
+            <div>
+              <div 
+                className="rounded-lg p-2.5 h-full flex flex-col justify-center items-center"
+                style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1.5px solid #e2e8f0',
+                  minHeight: '100px',
+                }}
+              >
+                <div className="text-center">
+                  <div className="flex items-baseline justify-center gap-0.5">
                     <span 
                       className="text-gray-900"
-                      style={{ fontSize: '30px', fontWeight: 700, lineHeight: '1' }}
+                      style={{ fontSize: '14px', fontWeight: 700, lineHeight: '1' }}
                     >
-                      {station.minPrice}원
+                      {station.minPrice}
                     </span>
                     <span 
                       className="text-gray-600"
-                      style={{ fontSize: '16px', fontWeight: 500 }}
+                      style={{ fontSize: '14px', fontWeight: 500 }}
                     >
-                      /kWh
+                      원/kWh
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* 3. 주소 정보 (Full Width) */}
-            <div>
-              {/* 정보 박스 */}
-              <div 
-                className="rounded-xl p-3"
-                style={{
-                  backgroundColor: '#f8fafc',
-                  border: '2px solid #e2e8f0',
-                }}
-              >
-                <p 
-                  className="text-gray-900 mb-1"
-                  style={{ fontSize: '17px', lineHeight: '1.5', fontWeight: 400 }}
-                >
-                  {station.address}
-                </p>
-                {station.locationDetail && (
-                  <p 
-                    className="text-gray-500"
-                    style={{ fontSize: '15px', lineHeight: '1.5' }}
-                  >
-                    {station.locationDetail}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* 4. 길안내 버튼 */}
-            <button
-              onClick={handleNavigation}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
-              style={{ 
-                minHeight: '56px',
-                height: '56px',
-                fontSize: '18px',
-                fontWeight: 600,
-              }}
-            >
-              <Navigation 
-                style={{ width: '20px', height: '20px' }} 
-                strokeWidth={2.5}
-              />
-              길안내
-            </button>
           </div>
+
+          {/* 3. 주소 정보 (한 줄) */}
+          <div 
+            className="rounded-lg p-2 mb-3 flex flex-col justify-center"
+            style={{
+              backgroundColor: '#f8fafc',
+              border: '1.5px solid #e2e8f0',
+              minHeight: '60px',
+            }}
+          >
+            <p 
+              className="text-gray-900 truncate"
+              style={{ fontSize: '14px', lineHeight: '1.4', fontWeight: 400 }}
+              title={station.address}
+            >
+              {station.address}
+            </p>
+            {station.locationDetail && (
+              <p 
+                className="text-gray-500 truncate mt-0.5"
+                style={{ fontSize: '14px', lineHeight: '1.3' }}
+                title={station.locationDetail}
+              >
+                {station.locationDetail}
+              </p>
+            )}
+          </div>
+
+          {/* 4. 길안내 버튼 */}
+          <button
+            onClick={handleNavigation}
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 active:bg-blue-800 transition-colors"
+            style={{ 
+              minHeight: '48px',
+              height: '48px',
+              fontSize: '16px',
+              fontWeight: 600,
+            }}
+          >
+            <Navigation 
+              style={{ width: '18px', height: '18px' }} 
+              strokeWidth={2.5}
+            />
+            길안내
+          </button>
         </div>
       </div>
     </>
