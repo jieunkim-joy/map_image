@@ -151,13 +151,17 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                     )}
                     <div className="space-y-1.5">
                       {statusSummary.fastChargers.total > 0 && (
-                        <p className="text-lg font-bold text-gray-900 break-words">
-                          100kW 이상 | {statusSummary.fastChargers.available}/{statusSummary.fastChargers.total}
+                        <p className="text-lg font-bold break-words">
+                          <span className="text-gray-900">100kW 이상 | </span>
+                          <span className="text-green-600">{statusSummary.fastChargers.available}</span>
+                          <span className="text-gray-500">/{statusSummary.fastChargers.total}</span>
                         </p>
                       )}
                       {statusSummary.regularChargers.total > 0 && (
-                        <p className="text-lg font-bold text-gray-900 break-words">
-                          50kW | {statusSummary.regularChargers.available}/{statusSummary.regularChargers.total}
+                        <p className="text-lg font-bold break-words">
+                          <span className="text-gray-900">50kW | </span>
+                          <span className="text-green-600">{statusSummary.regularChargers.available}</span>
+                          <span className="text-gray-500">/{statusSummary.regularChargers.total}</span>
                         </p>
                       )}
                     </div>
@@ -170,39 +174,36 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
 
             {/* Right Box: 요금 정보 (1/3 너비) */}
             <div 
-              className="bg-gray-50 rounded-lg p-3 flex flex-col justify-center" 
+              className="bg-gray-50 rounded-lg p-3 flex flex-col" 
               style={{ 
                 minHeight: '100px',
                 minWidth: 0,
               }}
             >
               <p className="text-xs text-gray-500 mb-1.5">요금</p>
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-lg font-bold text-gray-900">
-                  {station.minPrice}원
-                </span>
-                <span className="text-lg font-medium text-gray-500">
-                  /kWh
-                </span>
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-lg font-bold text-gray-900">
+                    {station.minPrice}원
+                  </span>
+                  <span className="text-lg font-medium text-gray-500">
+                    /kWh
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* 3. 주소 정보 영역 (Row 2): Full Width */}
           <div className="w-full bg-gray-50 rounded-lg p-3 mb-3">
-            <div className="flex items-start gap-1.5">
-              <span className="text-base">📍</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-600 truncate" title={station.address}>
-                  {station.address}
-                </p>
-                {station.locationDetail && (
-                  <p className="text-sm text-gray-500 truncate mt-0.5" title={station.locationDetail}>
-                    {station.locationDetail}
-                  </p>
-                )}
-              </div>
-            </div>
+            <p className="text-sm text-gray-600 truncate" title={station.address}>
+              {station.address}
+            </p>
+            {station.locationDetail && (
+              <p className="text-sm text-gray-500 truncate mt-0.5" title={station.locationDetail}>
+                {station.locationDetail}
+              </p>
+            )}
           </div>
 
           {/* 4. 하단 버튼 영역 (Row 3): Action Button */}
