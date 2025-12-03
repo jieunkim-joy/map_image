@@ -126,15 +126,15 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
             </div>
           </div>
 
-          {/* 2. 메인 정보 영역 (Row 1): 비대칭 레이아웃 2:1 - 모바일에서도 강제 가로 배치 */}
+          {/* 2. 메인 정보 영역 (Row 1): 비대칭 레이아웃 6:4 - 모바일에서도 강제 가로 배치 */}
           <div 
             className="grid mb-3"
             style={{
-              gridTemplateColumns: '2fr 1fr',
+              gridTemplateColumns: '6fr 4fr',
               gap: '8px',
             }}
           >
-            {/* Left Box: 이용 가능 현황 (2/3 너비) */}
+            {/* Left Box: 이용 가능 현황 (6/10 너비) */}
             <div 
               className="bg-gray-50 rounded-lg p-3 flex flex-col" 
               style={{ 
