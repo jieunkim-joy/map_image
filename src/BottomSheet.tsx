@@ -151,18 +151,22 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                     )}
                     <div className="space-y-1.5">
                       {statusSummary.fastChargers.total > 0 && (
-                        <p className="text-lg font-bold break-words">
-                          <span className="text-gray-900">100kW 이상 | </span>
-                          <span className="text-green-600">{statusSummary.fastChargers.available}</span>
-                          <span className="text-gray-500">/{statusSummary.fastChargers.total}</span>
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-gray-900">100kW 이상</span>
+                          <div className="flex items-baseline gap-0.5">
+                            <span className="text-xl font-bold text-green-600">{statusSummary.fastChargers.available}</span>
+                            <span className="text-lg font-bold text-gray-500">/{statusSummary.fastChargers.total}</span>
+                          </div>
+                        </div>
                       )}
                       {statusSummary.regularChargers.total > 0 && (
-                        <p className="text-lg font-bold break-words">
-                          <span className="text-gray-900">50kW | </span>
-                          <span className="text-green-600">{statusSummary.regularChargers.available}</span>
-                          <span className="text-gray-500">/{statusSummary.regularChargers.total}</span>
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-gray-900">50kW</span>
+                          <div className="flex items-baseline gap-0.5">
+                            <span className="text-xl font-bold text-green-600">{statusSummary.regularChargers.available}</span>
+                            <span className="text-lg font-bold text-gray-500">/{statusSummary.regularChargers.total}</span>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
