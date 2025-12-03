@@ -142,10 +142,10 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                 minWidth: 0,
               }}
             >
-              <p className="text-xs text-gray-500 mb-1.5">이용 가능 충전기</p>
+              <p className="text-xs text-gray-500 mb-1.5" style={{ height: '18px', lineHeight: '18px' }}>이용 가능 충전기</p>
               <div className="flex-1 flex flex-col justify-center">
                 {statusSummary ? (
-                  <div className="space-y-1">
+                  <div className="flex flex-col justify-center" style={{ minHeight: '36px' }}>
                     {isAllBusy && (
                       <p className="text-xs text-red-600 font-medium mb-1">⚠️ 전부 사용중</p>
                     )}
@@ -176,7 +176,7 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
               </div>
             </div>
 
-            {/* Right Box: 요금 정보 (1/3 너비) */}
+            {/* Right Box: 요금 정보 (4/10 너비) */}
             <div 
               className="bg-gray-50 rounded-lg p-3 flex flex-col" 
               style={{ 
@@ -184,9 +184,9 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                 minWidth: 0,
               }}
             >
-              <p className="text-xs text-gray-500 mb-1.5">요금</p>
+              <p className="text-xs text-gray-500 mb-1.5" style={{ height: '18px', lineHeight: '18px' }}>요금</p>
               <div className="flex-1 flex flex-col justify-center">
-                <div className="flex items-baseline gap-0.5">
+                <div className="flex items-baseline gap-0.5 justify-center" style={{ minHeight: '36px', alignItems: 'center' }}>
                   <span className="text-lg font-bold text-gray-900">
                     {station.minPrice}원
                   </span>
