@@ -153,18 +153,18 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
                       {statusSummary.fastChargers.total > 0 && (
                         <div className="flex items-center justify-between">
                           <span className="text-lg font-bold text-gray-900">100kW 이상</span>
-                          <div className="flex items-baseline gap-0.5">
+                          <div className="flex items-baseline gap-2">
                             <span className="text-xl font-bold text-green-600">{statusSummary.fastChargers.available}</span>
-                            <span className="text-lg font-bold text-gray-500">/{statusSummary.fastChargers.total}</span>
+                            <span className="text-sm font-bold text-gray-500">/{statusSummary.fastChargers.total}</span>
                           </div>
                         </div>
                       )}
                       {statusSummary.regularChargers.total > 0 && (
                         <div className="flex items-center justify-between">
                           <span className="text-lg font-bold text-gray-900">50kW</span>
-                          <div className="flex items-baseline gap-0.5">
+                          <div className="flex items-baseline gap-2">
                             <span className="text-xl font-bold text-green-600">{statusSummary.regularChargers.available}</span>
-                            <span className="text-lg font-bold text-gray-500">/{statusSummary.regularChargers.total}</span>
+                            <span className="text-sm font-bold text-gray-500">/{statusSummary.regularChargers.total}</span>
                           </div>
                         </div>
                       )}
@@ -186,11 +186,11 @@ export function BottomSheet({ station, onClose }: BottomSheetProps) {
             >
               <p className="text-xs text-gray-500 mb-1.5" style={{ height: '18px', lineHeight: '18px' }}>요금</p>
               <div className="flex-1 flex flex-col justify-center">
-                <div className="flex items-baseline gap-0.5 justify-center" style={{ minHeight: '36px', alignItems: 'center' }}>
+                <div className="flex items-baseline gap-2" style={{ minHeight: '36px' }}>
                   <span className="text-lg font-bold text-gray-900">
                     {station.minPrice}원
                   </span>
-                  <span className="text-lg font-medium text-gray-500">
+                  <span className="text-sm font-medium text-gray-500">
                     /kWh
                   </span>
                 </div>
