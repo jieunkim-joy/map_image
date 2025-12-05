@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { MapView } from './MapView';
 import type { ChargerStation } from './types';
 import { parseCSVData } from './utils';
@@ -10,7 +10,6 @@ export default function App() {
     lng: 128.681235,
   }); // 경남 지역 기본값
   const [zoomLevel] = useState(5);
-  const mapInstanceRef = useRef<any>(null);
 
   // CSV 데이터 로드
   useEffect(() => {
@@ -30,14 +29,11 @@ export default function App() {
 
   return (
     <div className="h-screen w-screen overflow-hidden" style={{ margin: 0, padding: 0 }}>
-          <MapView
+      <MapView
         stations={stations}
-            center={mapCenter}
-            zoomLevel={zoomLevel}
-            onMapReady={(map) => {
-              mapInstanceRef.current = map;
-            }}
-          />
+        center={mapCenter}
+        zoomLevel={zoomLevel}
+      />
     </div>
   );
 }

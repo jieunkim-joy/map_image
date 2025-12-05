@@ -5,7 +5,6 @@ interface MapViewProps {
   stations: ChargerStation[];
   center: { lat: number; lng: number };
   zoomLevel: number;
-  onMapReady?: (map: any) => void;
 }
 
 declare global {
@@ -18,7 +17,6 @@ export function MapView({
   stations,
   center,
   zoomLevel,
-  onMapReady,
 }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -45,10 +43,6 @@ export function MapView({
       const map = new window.kakao.maps.Map(container, options);
       mapRef.current = map;
       isInitializedRef.current = true;
-      
-      if (onMapReady) {
-        onMapReady(map);
-      }
     });
   }, []);
 
