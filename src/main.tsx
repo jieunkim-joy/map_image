@@ -25,6 +25,7 @@ function initKakaoMap() {
     console.log('🔍 환경변수 확인:', {
       hasKakaoMapKey: !!kakaoAppKey,
       keyLength: kakaoAppKey?.length || 0,
+      keyPrefix: kakaoAppKey?.substring(0, 10) || 'N/A',
       allEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
     });
     
@@ -32,6 +33,13 @@ function initKakaoMap() {
       console.error('❌ 카카오맵 API 키가 설정되지 않았습니다.');
       console.error('Railway에서 VITE_KAKAO_MAP_APP_KEY 환경변수를 설정하고 재배포하세요.');
       resolve(); // 에러가 있어도 앱 실행
+      return;
+    }
+
+    // API 키 유효성 검사 (기본적인 형식 확인)
+    if (kakaoAppKey.trim().length === 0) {
+      console.error('❌ 카카오맵 API 키가 비어있습니다.');
+      resolve();
       return;
     }
 
@@ -43,8 +51,11 @@ function initKakaoMap() {
     } else {
       // 스크립트 태그 생성 및 추가
       const script = document.createElement('script');
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoAppKey}&autoload=false`;
+      // API 키를 URL 인코딩하여 안전하게 사용
+      const encodedKey = encodeURIComponent(kakaoAppKey.trim());
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodedKey}&autoload=false`;
       script.async = true;
+      script.crossOrigin = 'anonymous';
       script.onload = () => {
         let checkKakao: number | null = null;
         let timeoutId: number | null = null;
@@ -93,8 +104,14 @@ function initKakaoMap() {
           }
         }, 15000);
       };
-      script.onerror = () => {
-        console.error('카카오맵 SDK 스크립트 로드 실패');
+      script.onerror = (error) => {
+        console.error('❌ 카카오맵 SDK 스크립트 로드 실패:', error);
+        console.error('가능한 원인:');
+        console.error('1. API 키가 잘못되었거나 유효하지 않음');
+        console.error('2. Railway 환경변수 VITE_KAKAO_MAP_APP_KEY 확인 필요');
+        console.error('3. 카카오 개발자 콘솔에서 플랫폼 도메인 설정 확인');
+        console.error('4. API 키에 JavaScript 키가 활성화되어 있는지 확인');
+        console.error('현재 API 키 (처음 10자):', kakaoAppKey.substring(0, 10));
         resolve(); // 에러가 있어도 앱 실행
       };
       document.head.appendChild(script);
