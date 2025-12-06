@@ -4,15 +4,13 @@
 
 ### 1. GitHub 저장소 연결
 - Railway 대시보드에서 "New Project" → "Deploy from GitHub repo" 선택
-- `Castlehungo/electro_search` 저장소 선택
+- GitHub 저장소 선택
 
 ### 2. 환경변수 설정
 Railway 대시보드의 **Variables** 탭에서 다음 환경변수를 추가하세요:
 
 ```
-VITE_KAKAO_MAP_APP_KEY=dc9b8bd337a4bbcdd54692e5c2a6a044
-VITE_KAKAO_REST_API_KEY=2593b2e75d34733f4d2bdfafc70fd001
-VITE_ENV_API_KEY=YpTJD6AvEhKYwklChyF8W6zutK228pAkbKgy3qGNa18%2FmyJTkQxtCDLAJvMLnQPQCm5JlYeCUgX2Yy0HS8fNgw%3D%3D
+VITE_KAKAO_MAP_APP_KEY=your_kakao_map_api_key
 ```
 
 ⚠️ **중요**: 
@@ -41,8 +39,7 @@ Railway는 자동으로 다음을 감지합니다:
 
 1. Railway가 제공하는 도메인으로 접속
 2. 카카오맵이 정상적으로 로드되는지 확인
-3. 검색 기능이 작동하는지 확인
-4. 충전소 핀 클릭 시 API 호출이 정상인지 확인
+3. 프로모션 충전소 핀이 지도에 표시되는지 확인
 
 ## 문제 해결
 
@@ -61,5 +58,4 @@ Railway는 자동으로 다음을 감지합니다:
 - Railway는 자동으로 HTTPS를 제공합니다
 - 카카오맵 API 설정에서 Railway 도메인을 허용 목록에 추가해야 할 수 있습니다
 - **환경변수 변경 후 수동으로 재배포해야 합니다** (자동 재배포 안 됨)
-- 지도가 표시되지 않으면 [TROUBLESHOOTING_RAILWAY.md](./TROUBLESHOOTING_RAILWAY.md) 참고
-
+- 지도가 표시되지 않으면 Railway 로그에서 에러 메시지 확인

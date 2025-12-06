@@ -5,6 +5,7 @@ interface MapViewProps {
   stations: ChargerStation[];
   center: { lat: number; lng: number };
   zoomLevel: number;
+  onMapReady?: (map: any) => void;
 }
 
 declare global {
@@ -17,6 +18,7 @@ export function MapView({
   stations,
   center,
   zoomLevel,
+  onMapReady,
 }: MapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -33,16 +35,25 @@ export function MapView({
       const options = {
         center: new window.kakao.maps.LatLng(center.lat, center.lng),
         level: zoomLevel,
-        draggable: true,
-        scrollwheel: true,
-        disableDoubleClick: false,
-        disableDoubleClickZoom: false,
-        keyboardShortcuts: true,
+        draggable: true, // 지도 드래그 활성화
+        scrollwheel: true, // 스크롤 줌 활성화
+        disableDoubleClick: true,
+        disableDoubleClickZoom: true,
+        keyboardShortcuts: false,
       };
-
+      
+      // 카카오맵 생성
       const map = new window.kakao.maps.Map(container, options);
+      
+      // 줌은 활성화 (스크롤 줌 사용 가능)
+      map.setZoomable(true);
+
       mapRef.current = map;
       isInitializedRef.current = true;
+      
+      if (onMapReady) {
+        onMapReady(map);
+      }
     });
   }, []);
 

@@ -1,5 +1,21 @@
 import type { ChargerStation, CSVRow } from './types';
 
+// 거리 계산 (Haversine 공식)
+export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // 지구 반지름 (km)
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function toRad(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}
+
 // Boolean 문자열 변환
 export function parseBoolean(value: string): boolean {
   return value === 'TRUE';
@@ -108,3 +124,4 @@ export function parseCSVData(csvText: string): ChargerStation[] {
   
   return Array.from(stationMap.values());
 }
+
