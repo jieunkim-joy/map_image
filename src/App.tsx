@@ -5,11 +5,11 @@ import { parseCSVData } from './utils';
 
 export default function App() {
   const [stations, setStations] = useState<ChargerStation[]>([]);
-  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
+  const [mapCenter] = useState<{ lat: number; lng: number }>({
     lat: 35.2228599,
     lng: 128.681235,
   }); // 경남 지역 기본값
-  const [zoomLevel, setZoomLevel] = useState(5);
+  const [zoomLevel] = useState(5);
   const mapInstanceRef = useRef<any>(null);
 
   // CSV 데이터 로드
