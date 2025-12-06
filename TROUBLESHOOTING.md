@@ -1,41 +1,61 @@
 # 문제 해결 가이드
 
-## MIME type 에러 해결 방법
+## 카카오맵 SDK 스크립트 로드 실패
 
 ### 증상
+브라우저 콘솔에 다음과 같은 에러가 표시됩니다:
 ```
-Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "application/octet-stream"
+카카오맵 SDK 스크립트 로드 실패
 ```
 
 ### 해결 방법
 
-1. **의존성 설치 확인**
-   ```bash
-   cd map_code
-   npm install
-   ```
+#### 1. Railway 환경변수 확인
 
-2. **Vite 개발 서버 실행**
-   ```bash
-   npm run dev
-   ```
-   
-   ⚠️ **중요**: 브라우저에서 `http://localhost:3000`으로 접속해야 합니다.
-   파일을 직접 열면 (file://) MIME type 에러가 발생합니다.
+Railway 대시보드에서 다음을 확인하세요:
 
-3. **서버 재시작**
-   - 서버를 중지 (Ctrl+C)
-   - `node_modules` 폴더 삭제
-   - `npm install` 재실행
-   - `npm run dev` 재실행
+1. **Variables 탭**으로 이동
+2. `VITE_KAKAO_MAP_APP_KEY` 환경변수가 설정되어 있는지 확인
+3. 값이 올바른지 확인 (API 키 전체가 입력되어 있어야 함)
+4. 환경변수 변경 후 **반드시 재배포** 필요
 
-4. **캐시 클리어**
-   ```bash
-   rm -rf node_modules/.vite
-   npm run dev
-   ```
+#### 2. 카카오 개발자 콘솔에서 도메인 등록
 
-5. **포트 충돌 확인**
-   - 3000번 포트가 사용 중인지 확인
-   - 다른 포트 사용: `npm run dev -- --port 3001`
+카카오맵 API는 허용된 도메인에서만 작동합니다:
 
+1. [카카오 개발자 콘솔](https://developers.kakao.com/) 접속
+2. 내 애플리케이션 → 앱 선택
+3. **플랫폼 설정** → **Web 플랫폼 등록**
+4. Railway에서 제공된 도메인을 추가:
+   - 예: `https://your-project.railway.app`
+   - 또는 `https://*.railway.app` (와일드카드 사용 가능)
+5. 저장 후 몇 분 기다린 후 다시 시도
+
+#### 3. API 키 확인
+
+1. 카카오 개발자 콘솔에서 **앱 키** 확인
+2. **JavaScript 키**를 사용해야 합니다 (REST API 키 아님)
+3. Railway 환경변수에 정확히 입력되었는지 확인
+
+#### 4. 재배포
+
+환경변수를 변경하거나 도메인을 등록한 후:
+
+1. Railway 대시보드 → **Deployments** 탭
+2. 최신 배포의 **"..."** 메뉴 → **"Redeploy"** 클릭
+3. 빌드 완료 후 다시 확인
+
+### 확인 방법
+
+브라우저 콘솔에서 다음을 확인하세요:
+
+1. **에러 메시지**: 구체적인 원인 파악
+2. **현재 도메인**: Railway 도메인이 올바른지 확인
+3. **API 키**: 키의 일부가 표시되면 환경변수는 로드됨
+
+### 추가 디버깅
+
+브라우저 개발자 도구의 Network 탭에서:
+- `https://dapi.kakao.com/v2/maps/sdk.js` 요청 확인
+- 상태 코드가 403이면 도메인 미등록 또는 API 키 오류
+- 상태 코드가 404이면 API 키가 잘못됨

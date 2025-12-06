@@ -27,7 +27,14 @@ export function MapView({
 
   // 카카오맵 초기화
   useEffect(() => {
-    if (!mapContainerRef.current || !window.kakao || isInitializedRef.current) return;
+    if (!mapContainerRef.current || isInitializedRef.current) return;
+    
+    // 카카오맵 SDK가 로드되지 않은 경우
+    if (!window.kakao || !window.kakao.maps) {
+      console.error('❌ 카카오맵 SDK가 로드되지 않았습니다.');
+      console.error('브라우저 콘솔에서 이전 에러 메시지를 확인하세요.');
+      return;
+    }
 
     window.kakao.maps.load(() => {
       const container = mapContainerRef.current!;
