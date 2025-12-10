@@ -14,6 +14,7 @@ export interface CSVRow {
   First_floor: string;
   is_fast: string;
   parking_free: string;
+  only_taxi: string;
 }
 
 // 그룹화된 충전소 타입
@@ -36,6 +37,7 @@ export interface ChargerStation {
   }>;
   hasFastCharger: boolean;
   minPrice: number;
+  onlyTaxi: boolean;
 }
 
 // 필터 옵션

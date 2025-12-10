@@ -28,7 +28,7 @@ export function MapView({
   // 카카오맵 초기화
   useEffect(() => {
     if (!mapContainerRef.current || isInitializedRef.current) return;
-    
+
     // 카카오맵 SDK가 로드되지 않은 경우
     if (!window.kakao || !window.kakao.maps) {
       console.error('❌ 카카오맵 SDK가 로드되지 않았습니다.');
@@ -48,7 +48,7 @@ export function MapView({
         disableDoubleClickZoom: true,
         keyboardShortcuts: false,
       };
-      
+
       // 카카오맵 생성
       const map = new window.kakao.maps.Map(container, options);
       
@@ -122,9 +122,9 @@ export function MapView({
         station.longitude
       );
 
-      // 빨간색 물방울 모양 핀 HTML 생성
+      // 물방울 모양 핀 HTML 생성 (onlyTaxi에 따라 색상 변경)
       const contentDiv = document.createElement('div');
-      contentDiv.innerHTML = createTeardropPinHTML();
+      contentDiv.innerHTML = createTeardropPinHTML(station.onlyTaxi);
       contentDiv.style.cursor = 'pointer';
       contentDiv.style.userSelect = 'none';
 
@@ -166,19 +166,26 @@ export function MapView({
   );
 }
 
-// 어두운 파란색 물방울 모양 핀 HTML 생성 함수 (노란색 번개 아이콘 포함)
-function createTeardropPinHTML(): string {
+// 물방울 모양 핀 HTML 생성 함수
+// onlyTaxi가 true면 노란색 배경 + 흰색 번개
+// onlyTaxi가 false면 어두운 파란색 배경 + 노란색 번개
+function createTeardropPinHTML(onlyTaxi: boolean = false): string {
+  // 택시기사 전용 할인 충전소: 노란색 배경 + 흰색 번개 + 흰색 테두리
+  const backgroundColor = onlyTaxi ? '#FFCD00' : '#1D2650';
+  const lightningColor = onlyTaxi ? '#FFFFFF' : '#FAE100';
+  const strokeColor = onlyTaxi ? '#FFFFFF' : '#708090';
+  
   return `
     <div style="position: relative; display: inline-block;">
       <svg width="42" height="36" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- 물방울 모양 핀 (상단 둥글고 하단 뾰족) - 어두운 파란색 본체 (가로로 더 넓게) -->
+        <!-- 물방울 모양 핀 (상단 둥글고 하단 뾰족) -->
         <path d="M24 0C32.2843 0 38 5.37258 38 12C38 18.6274 24 44 24 44C24 44 10 18.6274 10 12C10 5.37258 15.7157 0 24 0Z" 
-              fill="#1D2650" 
-              stroke="#708090" 
+              fill="${backgroundColor}" 
+              stroke="${strokeColor}" 
               stroke-width="1.5"/>
-        <!-- 노란색 번개 아이콘 -->
+        <!-- 번개 아이콘 -->
         <path d="M26 7L18 19H22L20 29L29 17H24L26 7Z" 
-              fill="#FAE100" 
+              fill="${lightningColor}" 
               stroke="none"/>
       </svg>
     </div>

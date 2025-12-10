@@ -66,6 +66,7 @@ export function parseCSVData(csvText: string): ChargerStation[] {
         First_floor: values[11] || '',
         is_fast: values[12] || '',
         parking_free: values[13] || '',
+        only_taxi: values[14] || 'FALSE',
       };
       rows.push(row);
     }
@@ -97,6 +98,7 @@ export function parseCSVData(csvText: string): ChargerStation[] {
         chargers: [],
         hasFastCharger: false,
         minPrice: price,
+        onlyTaxi: false,
       });
     }
     
@@ -113,6 +115,12 @@ export function parseCSVData(csvText: string): ChargerStation[] {
     
     if (isFast) {
       station.hasFastCharger = true;
+    }
+    
+    // 택시기사 전용 할인 여부 업데이트 (하나라도 TRUE면 true)
+    const isOnlyTaxi = parseBoolean(row.only_taxi);
+    if (isOnlyTaxi) {
+      station.onlyTaxi = true;
     }
     
     // 최저가 업데이트
